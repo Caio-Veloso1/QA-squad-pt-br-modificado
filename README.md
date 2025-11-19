@@ -1,3 +1,8 @@
+#Este projeto é baseado no repositório original:
+#https://github.com/erichans/question-answering-squad-pt-br
+#Todo o trabalho base pertence aos autores originais.  
+#Esta versão contém modificações feitas para fins de estudo e pesquisa.
+
 # question-answering-squad-pt-br
 
 Source code to fine tune BERTimbau on portuguese translated SQuAD v1.1 dataset from Deep Learning Brasil.
