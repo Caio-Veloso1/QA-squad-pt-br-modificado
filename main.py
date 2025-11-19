@@ -1,6 +1,7 @@
-from transformers import BertForQuestionAnswering, BertTokenizerFast, default_data_collator, \
-    TrainingArguments, IntervalStrategy, Trainer, EvalPrediction
-from datasets import load_dataset, load_metric
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, default_data_collator, \
+    TrainingArguments, Trainer, EvalPrediction
+from datasets import load_dataset
+import evaluate
 from pathlib import Path
 from preprocessing import flatten_data, prepare_train_features
 from postprocessing import postprocess_qa_predictions
@@ -20,22 +21,23 @@ def run():
 
     qa_dataset = load_dataset('json', data_files={'train': train_file, 'validation': validation_file}, field='data')
 
+
     model_type = 'base'
     # model_type = 'large'
 
     max_length = 512
     stride = 128
 
-    tokenizer = BertTokenizerFast.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased', local_files_only=True)
+    tokenizer = AutoTokenizer.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
 
     tokenized_datasets = qa_dataset.map(
         prepare_train_features,
         fn_kwargs={'tokenizer': tokenizer, 'max_length': max_length, 'stride': stride, 'padding_right': True},
         batched=True, remove_columns=qa_dataset['train'].column_names)
 
-    model = BertForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
+    model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
 
-    metric = load_metric('squad')
+    metric = evaluate.load("squad")
 
     def compute_metrics(p: EvalPrediction) -> Dict:
         final_predictions = postprocess_qa_predictions(qa_dataset['validation'],
@@ -61,7 +63,8 @@ def run():
         warmup_ratio=0.0,
         weight_decay=0.01,  # strength of weight decay
         logging_steps=10,
-        evaluation_strategy=IntervalStrategy.EPOCH,
+        eval_strategy="epoch",
+        save_strategy="epoch",
         metric_for_best_model='f1',
         save_total_limit=1,
         fp16=False,
