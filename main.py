@@ -49,7 +49,6 @@ def run():
 
     batch_size = 16
     train_epochs = 2
-    experiment_name = /kaggle/working/modelo
 
     training_args = TrainingArguments(
         output_dir="/kaggle/working/modelo",  # output directory
