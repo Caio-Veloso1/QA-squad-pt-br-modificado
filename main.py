@@ -49,10 +49,10 @@ def run():
 
     batch_size = 16
     train_epochs = 2
-    experiment_name = f'{train_epochs}_epochs_{model_type}_qa'
+    experiment_name = /kaggle/working/modelo
 
     training_args = TrainingArguments(
-        output_dir=f'./results/{experiment_name}',  # output directory
+        output_dir="/kaggle/working/modelo",  # output directory
         # logging_dir=f'./logs/{experiment_name}',
         num_train_epochs=train_epochs,  # total number of training epochs
         per_device_train_batch_size=batch_size,  # batch size per device during training
@@ -69,6 +69,7 @@ def run():
         save_total_limit=1,
         fp16=False,
         load_best_model_at_end=True
+        report_to="none"
     )
 
     trainer = Trainer(
