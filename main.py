@@ -35,7 +35,8 @@ def run():
         fn_kwargs={'tokenizer': tokenizer, 'max_length': max_length, 'stride': stride, 'padding_right': True},
         batched=True, remove_columns=qa_dataset['train'].column_names)
 
-    model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
+    model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased',
+                                                         gradient_checkpointing=True)
 
     metric = evaluate.load("squad")
 
@@ -66,7 +67,7 @@ def run():
         save_strategy="epoch",
         metric_for_best_model='f1',
         save_total_limit=1,
-        fp16=False,
+        fp16=True,
         load_best_model_at_end=True,
         report_to="none"
     )
