@@ -22,8 +22,8 @@ def run():
     qa_dataset = load_dataset('json', data_files={'train': train_file, 'validation': validation_file}, field='data')
 
 
-    model_type = 'base'
-    # model_type = 'large'
+    # model_type = 'base'
+    model_type = 'large'
 
     max_length = 512
     stride = 128
