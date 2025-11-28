@@ -35,8 +35,10 @@ def run():
         fn_kwargs={'tokenizer': tokenizer, 'max_length': max_length, 'stride': stride, 'padding_right': True},
         batched=True, remove_columns=qa_dataset['train'].column_names)
 
-    model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased',
-                                                         gradient_checkpointing=True)
+    model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
+
+    model.gradient_checkpointing_enable()
+    model.config.use_cache = False
 
     metric = evaluate.load("squad")
 
