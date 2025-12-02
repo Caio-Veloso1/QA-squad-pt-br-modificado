@@ -22,8 +22,8 @@ def run():
     qa_dataset = load_dataset('json', data_files={'train': train_file, 'validation': validation_file}, field='data')
 
 
-    # model_type = 'base'
-    model_type = 'large'
+    model_type = 'base'
+    #model_type = 'large'
 
     max_length = 512
     stride = 128
@@ -37,9 +37,10 @@ def run():
 
     model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
 
-    model.gradient_checkpointing_enable()
-    model.config.use_cache = False
-
+    # model.gradient_checkpointing_enable()
+    # model.config.use_cache = False
+    # economizar RAM 
+    
     metric = evaluate.load("squad")
 
     def compute_metrics(p: EvalPrediction) -> Dict:
@@ -51,7 +52,7 @@ def run():
         return metric.compute(predictions=formatted_predictions, references=references)
 
     batch_size = 16
-    train_epochs = 2
+    train_epochs = 3 #inicialmente 2
 
     training_args = TrainingArguments(
         output_dir="/kaggle/working/modelo",  # output directory
@@ -69,7 +70,6 @@ def run():
         save_strategy="epoch",
         metric_for_best_model='f1',
         save_total_limit=1,
-        fp16=False,
         load_best_model_at_end=True,
         report_to="none"
     )
