@@ -22,8 +22,8 @@ def run():
     qa_dataset = load_dataset('json', data_files={'train': train_file, 'validation': validation_file}, field='data')
 
 
-    model_type = 'base'
-    #model_type = 'large'
+    #model_type = 'base'
+    model_type = 'large' #teste atual, large Fp16=true e modo economico RAM, 3 epocas
 
     max_length = 512
     stride = 128
@@ -37,8 +37,8 @@ def run():
 
     model = AutoModelForQuestionAnswering.from_pretrained(f'neuralmind/bert-{model_type}-portuguese-cased')
 
-    # model.gradient_checkpointing_enable()
-    # model.config.use_cache = False
+    model.gradient_checkpointing_enable()
+    model.config.use_cache = False
     # economizar RAM 
     
     metric = evaluate.load("squad")
@@ -70,7 +70,7 @@ def run():
         save_strategy="epoch",
         metric_for_best_model='f1',
         save_total_limit=1,
-        fp16=False,
+        fp16=True,
         load_best_model_at_end=True,
         report_to="none"
     )
